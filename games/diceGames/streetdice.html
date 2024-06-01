@@ -30,14 +30,15 @@
             
             document.getElementById("player1Score").textContent = dice1;
             document.getElementById("player2Score").textContent = dice2;
-            
-            if (dice1 > dice2) {
-                alert("Player 1 wins this round with a total of " + total + "!");
-            } else if (dice2 > dice1) {
-                alert("Player 2 wins this round with a total of " + total + "!");
-            } else {
-                alert("It's a tie! Roll again.");
-            }
+            setTimeout(()=>{
+                if (dice1 > dice2) {
+                    alert("Player 1 wins this round with a total of " + total + "!");
+                } else if (dice2 > dice1) {
+                    alert("Player 2 wins this round with a total of " + total + "!");
+                } else {
+                    alert("It's a tie! Roll again.");
+                }
+            },10)
         }
     </script>
 </body>
