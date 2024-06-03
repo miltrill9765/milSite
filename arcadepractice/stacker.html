@@ -15,6 +15,7 @@
         #stacker {
             width: 300px;
             text-align: center;
+            position: relative;
         }
         .block {
             width: 50px;
@@ -22,6 +23,8 @@
             background-color: #007bff;
             margin: 5px;
             display: inline-block;
+            position: absolute;
+            bottom: 0;
         }
     </style>
 </head>
@@ -34,5 +37,40 @@
         <div class="block"></div>
         <div class="block"></div>
     </div>
+
+    <script>
+        const blocks = document.querySelectorAll('.block');
+        let movingRight = true;
+        let currentBlockIndex = 0;
+
+        function moveBlock() {
+            const currentBlock = blocks[currentBlockIndex];
+            const maxWidth = document.getElementById('stacker').offsetWidth - currentBlock.offsetWidth;
+
+            if (movingRight) {
+                currentBlock.style.left = `${parseInt(currentBlock.style.left || 0) + 1}px`;
+
+                if (parseInt(currentBlock.style.left) >= maxWidth) {
+                    movingRight = false;
+                    currentBlockIndex++;
+                }
+            } else {
+                currentBlock.style.left = `${parseInt(currentBlock.style.left) - 1}px`;
+
+                if (parseInt(currentBlock.style.left) <= 0) {
+                    movingRight = true;
+                    currentBlockIndex++;
+                }
+            }
+
+            if (currentBlockIndex === blocks.length) {
+                currentBlockIndex = 0;
+            }
+
+            window.requestAnimationFrame(moveBlock);
+        }
+
+        moveBlock();
+    </script>
 </body>
 </html>
