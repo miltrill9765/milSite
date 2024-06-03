@@ -1,114 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stacker Game</title>
-  <style>
-    #gameCanvas {
-      border: 1px solid black;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stacker Game</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="320" height="480"></canvas>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const blockSize = 20;
+        const rows = canvas.height / blockSize;
+        const cols = canvas.width / blockSize;
+        let board = [];
+        let currentPiece = {};
+        let score = 0;
 
-  <script>
-    // Game variables
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const blockSize = 20;
-    const rows = canvas.height / blockSize;
-    const cols = canvas.width / blockSize;
-    let board = [];
-    let currentPiece = null;
-    let nextPiece = null;
-    let score = 0;
+        // Initialize the board
+        function initBoard() {
+            for (let i = 0; i < rows; i++) {
+                board[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    board[i][j] = 0;
+                }
+            }
+        }
 
-    // Initialize the game
-    function init() {
-      resetBoard();
-      generateNextPiece();
-      draw();
-    }
+        // Create a new piece
+        function createPiece() {
+            const shapes = ['I', 'L', 'J', 'O', 'S', 'Z', 'T'];
+            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+            switch (randomShape) {
+                case 'I':
+                    currentPiece = {
+                        shape: [
+                            [0, 0, 0, 0],
+                            [1, 1, 1, 1],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0]
+                        ],
+                        x: Math.floor(cols / 2) - 1,
+                        y: 0
+                    };
+                    break;
+                // Add cases for other shapes
+            }
+        }
 
-    // Reset the board
-    function resetBoard() {
-      board = Array.from({ length: rows }, () => Array(cols).fill(0));
-    }
+        // Draw the board and the current piece
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (board[i][j]) {
+                        ctx.fillStyle = 'red';
+                        ctx.fillRect(j * blockSize, i * blockSize, blockSize, blockSize);
+                    }
+                }
+            }
 
-    // Generate a new piece
-    function generateNextPiece() {
-      currentPiece = nextPiece || generateRandomPiece();
-      nextPiece = generateRandomPiece();
-    }
+            ctx.fillStyle = 'green';
+            for (let i = 0; i < currentPiece.shape.length; i++) {
+                for (let j = 0; j < currentPiece.shape[i].length; j++) {
+                    if (currentPiece.shape[i][j]) {
+                        ctx.fillRect(
+                            (currentPiece.x + j) * blockSize,
+                            (currentPiece.y + i) * blockSize,
+                            blockSize,
+                            blockSize
+                        );
+                    }
+                }
+            }
+        }
 
-    // Generate a random piece
-    function generateRandomPiece() {
-      const pieces = [
-        [
-          [1, 1],
-          [1, 1],
-        ],
-        [
-          [0, 1, 0],
-          [1, 1, 1],
-        ],
-        // Add more piece shapes as needed
-      ];
-      return pieces[Math.floor(Math.random() * pieces.length)];
-    }
+        // Game loop
+        function gameLoop() {
+            drawBoard();
+            requestAnimationFrame(gameLoop);
+        }
 
-    // Draw the game board and pieces
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw the board
-      board.forEach((row, y) => {
-        row.forEach((value, x) => {
-          if (value) {
-            ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
-          }
-        });
-      });
-
-      // Draw the current piece
-      drawPiece(currentPiece, { x: 5, y: 0 }, 'red');
-
-      // Draw the next piece
-      drawPiece(nextPiece, { x: 10, y: 10 }, 'gray');
-    }
-
-    // Draw a piece on the board
-    function drawPiece(piece, position, color) {
-      ctx.fillStyle = color;
-      piece.forEach((row, y) => {
-        row.forEach((value, x) => {
-          if (value) {
-            ctx.fillRect(
-              (position.x + x) * blockSize,
-              (position.y + y) * blockSize,
-              blockSize,
-              blockSize
-            );
-          }
-        });
-      });
-    }
-
-    // Game loop
-    function gameLoop() {
-      // Move the piece down
-      // Check for collisions
-      // Remove completed rows
-      // Update score
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
-
-    // Start the game
-    init();
-    gameLoop();
-  </script>
+        // Start the game
+        initBoard();
+        createPiece();
+        gameLoop();
+    </script>
 </body>
 </html>
